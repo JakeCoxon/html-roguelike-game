@@ -1,0 +1,57 @@
+#container {
+    width: 400px;
+    height: 400px;
+    overflow: hidden;
+    position: relative;
+}
+#inner {
+    line-height: 0;
+    position: relative;
+    left: 0;
+    top: 0;
+}
+.player {
+    position: absolute;
+    transition: all 0.1s ease;
+    left: 0; top: 0;
+    background-color: red;
+    width: 32px;
+    height: 32px;
+    background-image: url(http://i.imgur.com/MZg0XUl.png);
+    background-position: -128px 0;
+    background-size: 480px;
+}
+.enemy {
+    position: absolute;
+    transition: all 0.1s ease;
+    left: 0; top: 0;
+    background-color: #000099;
+    width: 32px;
+    height: 32px;
+    background-image: url(http://i.imgur.com/MZg0XUl.png);
+    background-position: -192px -224px;
+    background-size: 480px;
+}
+.tile {
+    width: 32px; height: 32px;
+    background-color: #333;
+    display: inline-block;
+    background-image: url(http://i.imgur.com/MZg0XUl.png);
+    background-size: 480px;
+}
+.tile.block0 {
+    background-color: #111;
+    background-image: none;
+}
+.tile.block1 {
+    background-position: -192px -32px;
+}
+.tile.block2 {
+    background-position: -0 -256px;
+}
+.tile.block3 {
+    background-position: -224px -64px;
+}
+.tile.block4 {
+    background-position: -128px -128px;
+}
