@@ -16,11 +16,42 @@
     <script src="game.js"></script>
     <script src="view.js"></script>
     <script>
-      var view = new WorldView({ model: model,
-                                 cols: 12, 
-                                 rows: 12 });
 
-      React.renderComponent( view, document.getElementById( 'container' ) );
+
+var tiles = build(tileBuilder, function() { /*
+111111111111
+1          1
+1          1
+1          4
+1     2    1
+4          1
+1          1
+1          1
+4          1
+1          1
+1     333333
+111111333333
+*/});
+
+var model = {
+    tiles : tiles,
+
+    entities: [ 
+      new Entity(3, 4, "enemy"), 
+      new Entity(4, 7, "enemy"), 
+      new Entity(8, 4, "enemy") ]
+
+}
+
+
+var view = new WorldView({ model: model,
+                           cols: 12, 
+                           rows: 12 });
+
+React.renderComponent( view, document.getElementById( 'container' ) );
+
+
+
     </script>
   </body>
 

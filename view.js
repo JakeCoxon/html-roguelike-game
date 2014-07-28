@@ -66,8 +66,8 @@ var ScrollableView = React.createClass({
         var innerX = Math.floor( this.props.cameraX / tileWidth ) - Math.floor( innerCols / 2 ),
             innerY = Math.floor( this.props.cameraY / tileHeight ) - Math.floor( innerRows / 2 );
 
-        var boardWidth = this.props.model.boardWidth,
-            boardHeight = this.props.model.boardHeight;
+        var boardWidth = this.props.model.tiles.width,
+            boardHeight = this.props.model.tiles.height;
 
         var worldStyle = { left: - ( this.props.cameraX - 200 ),
                            top: - ( this.props.cameraY - 200 ),
@@ -88,7 +88,7 @@ var ScrollableView = React.createClass({
 
 
 
-function makeScrollableView( container, model ) {
+function makeScrollableView( container, model, player ) {
 
     var currentX = 0,
         currentY = 0;
@@ -112,7 +112,7 @@ function makeScrollableView( container, model ) {
             
             if ( dx || dy ) {
 
-                model.player.move(dx, dy);
+                player.move(dx, dy);
                 refresh();
                 
                 return false;
@@ -124,8 +124,8 @@ function makeScrollableView( container, model ) {
 
         function update() {
           
-            var targetX = model.player.x * tileWidth,
-                targetY = model.player.y * tileHeight;
+            var targetX = player.x * tileWidth,
+                targetY = player.y * tileHeight;
             
             var increaseX = (targetX - currentX) / 20,
                 increaseY = (targetY - currentY) / 20;

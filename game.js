@@ -2,11 +2,18 @@ function build(builder, f) {
     var s = f.toString();
     var x = s.match(/\/\*\r?\n([^\*]*)/);
     var y = x[0].split(/\r?\n/);
-    return _.map(y.splice(1, y.length-2), function(line) {
+    var data = _.map(y.splice(1, y.length-2), function(line) {
         return _.map(line, function(x) {
             return builder[ x == " " ? 0 : Number(x) ]();
         });
     });
+
+    return {
+        data: data,
+
+        width: _.max(_.map(data, function(line) { return line.length; })),
+        height: data.length
+    }
 }
 
 
@@ -19,8 +26,8 @@ function set(obj, key, el) {
 }
 
 function getTile(x, y) {
-    return !model.tiles[y] ? tileBuilder[0]() :
-           !model.tiles[y][x] ? tileBuilder[0]() : model.tiles[y][x];
+    return !model.tiles.data[y] ? tileBuilder[0]() :
+           !model.tiles.data[y][x] ? tileBuilder[0]() : model.tiles.data[y][x];
 }
  
 function getBlockedByEntity(x, y) {
@@ -126,45 +133,6 @@ var tileBuilder = {};
     
 })();
 
-var tiles = build(tileBuilder, function() { /*
-111111111111111111111111111111111111111111
-1         1                   1          1
-1         1              5    8  2 2     1
-1         1                   1          1
-1     2   111111  11111111111111111      1
-4                 13333333333            1
-1                 1333333                1
-1     33333333    1333         2 2       1
-4     33333333  2 1           2 2 2      1
-1                 1                      1
-1                                        1
-1111111             111181111  11111111111
-1111111  61111111              61
-1111111 7 1111111      6        1
-111111111111111111111111111111111
-*/});
-
-var enemies = [ 
-  new Entity(1, 4, "enemy"), 
-  new Entity(4, 4, "enemy"), 
-  new Entity(5, 4, "enemy") ];
-
-var player = new Entity(1, 1, "player");
-
-var model = {
-    tiles : tiles,
-
-    boardWidth: _.max(_.map(tiles, function(line) { return line.length; })),
-    boardHeight: tiles.length,
-
-    entities: [ player ].concat( enemies ),
-    player: player
-
-}
-
-console.log(model.boardWidth, model.boardHeight, model.boardWidth * model.boardHeight)
-
-
 function onPlayerBumpTile(tile) {
     if (tile.onBump) {
         var result = tile.onBump();
@@ -174,9 +142,19 @@ function onPlayerBumpTile(tile) {
 function onPlayerBumpEntity(entity) {
 }
 function onPlayerPerformAction() {
-    _.each(enemies, function(enemy) {
-        enemy.move(
-            Math.floor(Math.random() * 3 - 1),
-            Math.floor(Math.random() * 3 - 1));
-    });
+    enemyController.updateAll();
+}
+
+var enemyController = {
+    enemies: [],
+    pushAll: function(enemies) {
+        Array.prototype.push.apply(this.enemies, enemies);
+    },
+    updateAll: function() {
+        _.each(this.enemies, function(enemy) {
+            enemy.move(
+                Math.floor(Math.random() * 3 - 1),
+                Math.floor(Math.random() * 3 - 1));
+        });
+    }
 }
