@@ -1,8 +1,14 @@
 #container {
-    width: 400px;
-    height: 400px;
+    width: 384px;
+    height: 384px;
     overflow: hidden;
     position: relative;
+}
+#world {
+    line-height: 0;
+    position: relative;
+    left: 0;
+    top: 0;
 }
 #inner {
     line-height: 0;
@@ -10,6 +16,7 @@
     left: 0;
     top: 0;
 }
+
 .player {
     position: absolute;
     transition: all 0.1s ease;

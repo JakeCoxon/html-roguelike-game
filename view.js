@@ -1,92 +1,150 @@
 
 var tileWidth = 32, tileHeight = 32;
 
+var WorldView = React.createClass({
 
-var View = React.createClass({
-    render: function() {
-        var tiles = [];
+    render: function( ) {
 
-        var boardWidth = this.props.model.boardWidth,
-            boardHeight = this.props.model.boardHeight;
+        var tiles = [], entities = [];
 
-        for ( var j = 0; j < boardHeight; j++ ) {
+        var innerX = this.props.tileX || 0,
+            innerY = this.props.tileY || 0,
+            innerCols = this.props.cols,
+            innerRows = this.props.rows;
 
-            for ( var i = 0; i < boardWidth; i++ ) {
+        for ( var j = 0; j < innerRows; j++ ) {
 
-                var blockId = getTile(i, j).blockId;
-                var key = j * boardWidth + i;
+            for ( var i = 0; i < innerCols; i++ ) {
+
+                var blockId = getTile( innerX + i, innerY + j ).blockId;
+                var key = j * innerRows + i;
 
                 tiles.push(
-                    new React.DOM.div({ key: key, className: "tile block" + blockId }, "")
+                    new React.DOM.div( { key: key, className: "tile block" + blockId }, "" )
                 );
 
             }
         }
 
-        _.each( this.props.model.entities, function( entity ) {
+        _.each( this.props.model.entities, function( entity, i ) {
 
-            var style = {
-                left: entity.x * tileWidth,
-                top: entity.y * tileHeight
-            };
+            var style = { left: entity.x * tileWidth,
+                          top: entity.y * tileHeight };
 
-            tiles.push(
-                new React.DOM.div({ className: entity.className, style: style })
+            entities.push(
+                new React.DOM.div({ key: "e" + i, className: entity.className, style: style })
             );
 
         } );
 
-        var style = { width: boardWidth * tileWidth, 
-                      height: boardHeight * tileHeight };
 
-        return new React.DOM.div({ id: "inner", style: style }, tiles);
+        var innerStyle = { left: innerX * tileWidth,
+                           top: innerY * tileHeight,
+                           width: innerCols * tileWidth,
+                           height: innerRows * tileHeight };
+
+        var entitiesDivStyle = { position: "absolute",
+                                 left: -innerX * tileWidth,
+                                 top: -innerY * tileWidth };
+
+        return new React.DOM.div( { id: "inner", style: innerStyle }, 
+            tiles,
+            new React.DOM.div({ style: entitiesDivStyle }, entities ) );
+
+    }
+
+})
+
+var ScrollableView = React.createClass({
+
+    render: function() {
+        
+
+        var innerCols = Math.floor( 800 / tileWidth ),
+            innerRows = Math.floor( 800 / tileHeight );
+
+        var innerX = Math.floor( this.props.cameraX / tileWidth ) - Math.floor( innerCols / 2 ),
+            innerY = Math.floor( this.props.cameraY / tileHeight ) - Math.floor( innerRows / 2 );
+
+        var boardWidth = this.props.model.boardWidth,
+            boardHeight = this.props.model.boardHeight;
+
+        var worldStyle = { left: - ( this.props.cameraX - 200 ),
+                           top: - ( this.props.cameraY - 200 ),
+                           width: boardWidth * tileWidth, 
+                           height: boardHeight * tileHeight };
+
+        return new React.DOM.div({ id: "world", style: worldStyle }, 
+
+            new WorldView({ model: this.props.model,
+                            tileX: innerX,
+                            tileY: innerY,
+                            cols: innerCols, 
+                            rows: innerRows })
+
+        );
     }
 });
 
-function refresh() { 
-    React.renderComponent(new View({ model: model }), document.getElementById('container'));
-}
-
-refresh();
 
 
+function makeScrollableView( container, model ) {
 
+    var currentX = 0,
+        currentY = 0;
 
-$(function() {
-  
-$(window).on("keydown", function(ev) {
+    function refresh() { 
 
-    var dx = (ev.keyCode == 39) - (ev.keyCode == 37);
-    var dy = (ev.keyCode == 40) - (ev.keyCode == 38);
-    
-    if (dx || dy) {
-        model.player.move(dx, dy);
-        refresh();
-        return false;
+        var scrollableView = new ScrollableView({ model: model,
+                                                  cameraX: currentX,
+                                                  cameraY: currentY });
+
+        React.renderComponent( scrollableView, container );
+
     }
 
-});
+    $(function() {
 
-$(function() {
+        $( window ).on( "keydown", function( ev ) {
+
+            var dx = ( ev.keyCode == 39 ) - ( ev.keyCode == 37 );
+            var dy = ( ev.keyCode == 40 ) - ( ev.keyCode == 38 );
+            
+            if ( dx || dy ) {
+
+                model.player.move(dx, dy);
+                refresh();
+                
+                return false;
+
+            }
+
+        });
 
 
-    var inner = $("#inner");
-
-    function update() {
-      
-        var targetX = -(model.player.x * tileWidth - 200),
-            targetY = -(model.player.y * tileHeight - 200);
-        var currentX = inner.position().left,
-            currentY = inner.position().top;
+        function update() {
           
-        inner.css('left', currentX + (targetX - currentX) / 20);
-        inner.css('top', currentY + (targetY - currentY) / 20);
+            var targetX = model.player.x * tileWidth,
+                targetY = model.player.y * tileHeight;
+            
+            var increaseX = (targetX - currentX) / 20,
+                increaseY = (targetY - currentY) / 20;
 
-        requestAnimationFrame(update);
-    }
+            currentX += increaseX;
+            currentY += increaseY;
+              
+            refresh();
 
-    update();
-});
+            requestAnimationFrame( update );
+        }
 
-});
+        
+        refresh();
 
+        var world = $("#world");
+
+        update();
+
+
+    });
+}

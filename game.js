@@ -162,6 +162,8 @@ var model = {
 
 }
 
+console.log(model.boardWidth, model.boardHeight, model.boardWidth * model.boardHeight)
+
 
 function onPlayerBumpTile(tile) {
     if (tile.onBump) {
