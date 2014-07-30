@@ -1,8 +1,15 @@
+#inventory-container {
+    font: 13px Helvetica;
+    padding: 0 0 0 2px;
+    display: inline-block;
+    vertical-align: top;
+}
 #container {
     width: 384px;
     height: 384px;
     overflow: hidden;
     position: relative;
+    display: inline-block;
 }
 #world {
     line-height: 0;

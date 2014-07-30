@@ -104,14 +104,36 @@ var tileBuilder = {};
     set(tileBuilder, 2, function() {
         return new Tile(2, null, {
             solid: true,
-            money: Math.floor(Math.random() * 100),
-            onBump: function() {
+            money: Math.floor( Math.random() * 100 ),
+            item: ( Math.random() < 0.5 ) ? { name : "Cool item" } : null,
+
+            onBump: function( player ) {
+
+                var useChest = false;
+
                 if (this.money > 0) {
+
+                    player.money += this.money;
                     this.money = 0;
-                    console.log("Add money!");
+                    useChest = true;
+
+                }
+
+                if ( this.item ) {
+
+                    player.inventory.push( this.item );
+                    this.item = null;
+                    useChest = true;
+
+                }
+
+                if ( useChest ) {
+                    
                     this.blockId = "2-open";
+
                     return {turns: 1};
                 }
+
             }
         });
     });
@@ -120,7 +142,7 @@ var tileBuilder = {};
         return new Tile(8, null, {
             solid: true,
             open: false,
-            onBump: function() {
+            onBump: function( player ) {
                 if (!this.open) {
                     this.open = true;
                     this.solid = false;
@@ -135,7 +157,7 @@ var tileBuilder = {};
 
 function onPlayerBumpTile(tile) {
     if (tile.onBump) {
-        var result = tile.onBump();
+        var result = tile.onBump( player );
         if (result && result.turns) onPlayerPerformAction();
     }
 }

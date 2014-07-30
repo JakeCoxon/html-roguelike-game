@@ -93,6 +93,8 @@ function makeScrollableView( container, model, player ) {
     var currentX = 0,
         currentY = 0;
 
+    var updateCallbacks = [];
+
     function refresh() { 
 
         var scrollableView = new ScrollableView({ model: model,
@@ -133,7 +135,9 @@ function makeScrollableView( container, model, player ) {
             currentX += increaseX;
             currentY += increaseY;
               
-            refresh();
+            _.each( updateCallbacks, function( callback ) { 
+                callback( ); 
+            });
 
             requestAnimationFrame( update );
         }
@@ -145,6 +149,19 @@ function makeScrollableView( container, model, player ) {
 
         update();
 
+        updateCallbacks.push( refresh );
+
+
 
     });
+
+    return {
+        onUpdate: function( callback ) {
+
+            updateCallbacks.push( callback );
+
+        }
+    };
+
+
 }

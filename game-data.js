@@ -22,13 +22,23 @@ var enemies = [
   new Entity(4, 4, "enemy"), 
   new Entity(5, 4, "enemy") ];
 
+
+
 var player = new Entity(1, 1, "player");
+
+player.inventory = [
+  { name: "Sword of a thousands truths" },
+  { name: "Potion" },
+  { name: "Potion" } ];
+
+player.money = 10;
 
 var model = {
     tiles : tiles,
 
     entities: [ player ].concat( enemies ),
-    player: player
+    player: player,
+
 
 }
 
