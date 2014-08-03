@@ -162,6 +162,10 @@ function onPlayerBumpTile(tile) {
     }
 }
 function onPlayerBumpEntity(entity) {
+    if (entity.onBump) {
+        var result = entity.onBump( player );
+        if (result && result.turns) onPlayerPerformAction();
+    }
 }
 function onPlayerPerformAction() {
     enemyController.updateAll();
@@ -179,4 +183,8 @@ var enemyController = {
                 Math.floor(Math.random() * 3 - 1));
         });
     }
+}
+
+var dialogController = {
+    events: new EventEmitter2()
 }

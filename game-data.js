@@ -23,6 +23,17 @@ var enemies = [
   new Entity(5, 4, "enemy") ];
 
 
+var wizard = new Entity(12, 2, "wizard");
+wizard.onBump = function() {
+  dialogController.events.emit("dialog", {
+    message: "Owl: Hello mate",
+    options: [
+      { message: "Hello" },
+      { message: "Go away!" },
+      { message: "Give me your gold bitch" }
+    ]
+  });
+}
 
 var player = new Entity(1, 1, "player");
 
@@ -36,7 +47,7 @@ player.money = 10;
 var model = {
     tiles : tiles,
 
-    entities: [ player ].concat( enemies ),
+    entities: [ player, wizard ].concat( enemies ),
     player: player,
 
 

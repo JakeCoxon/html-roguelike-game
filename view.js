@@ -95,33 +95,33 @@ function makeScrollableView( container, model, player ) {
 
     var updateCallbacks = [];
 
+
+    var scrollableViewComponent = 
+        React.renderComponent( new ScrollableView({ model: model,
+                                                    cameraX: currentX,
+                                                    cameraY: currentY }), container );
+
     function refresh() { 
 
-        var scrollableView = new ScrollableView({ model: model,
-                                                  cameraX: currentX,
-                                                  cameraY: currentY });
-
-        React.renderComponent( scrollableView, container );
+        scrollableViewComponent.setProps({ model: model,
+                                           cameraX: currentX,
+                                           cameraY: currentY });
 
     }
 
+    function handleKeyEvent( ev ) {
+
+        var dx = ( ev.keyCode == 39 ) - ( ev.keyCode == 37 );
+        var dy = ( ev.keyCode == 40 ) - ( ev.keyCode == 38 );
+  
+        if ( dx || dy ) {
+            player.move(dx, dy);
+            view.refresh();
+            return true;
+        }
+    }
+
     $(function() {
-
-        $( window ).on( "keydown", function( ev ) {
-
-            var dx = ( ev.keyCode == 39 ) - ( ev.keyCode == 37 );
-            var dy = ( ev.keyCode == 40 ) - ( ev.keyCode == 38 );
-            
-            if ( dx || dy ) {
-
-                player.move(dx, dy);
-                refresh();
-                
-                return false;
-
-            }
-
-        });
 
 
         function update() {
@@ -145,8 +145,6 @@ function makeScrollableView( container, model, player ) {
         
         refresh();
 
-        var world = $("#world");
-
         update();
 
         updateCallbacks.push( refresh );
@@ -160,7 +158,9 @@ function makeScrollableView( container, model, player ) {
 
             updateCallbacks.push( callback );
 
-        }
+        },
+        refresh: refresh,
+        handleKeyEvent: handleKeyEvent
     };
 
 

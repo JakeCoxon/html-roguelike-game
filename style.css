@@ -46,6 +46,16 @@
     background-position: -192px -224px;
     background-size: 480px;
 }
+.wizard {
+    position: absolute;
+    transition: all 0.1s ease;
+    left: 0; top: 0;
+    width: 32px;
+    height: 32px;
+    background-image: url(http://i.imgur.com/MZg0XUl.png);
+    background-position: -160px -224px;
+    background-size: 480px;
+}
 .tile {
     width: 32px; height: 32px;
     background-color: #333;
