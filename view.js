@@ -16,7 +16,7 @@ var WorldView = React.createClass({
 
             for ( var i = 0; i < innerCols; i++ ) {
 
-                var blockId = getTile( innerX + i, innerY + j ).blockId;
+                var blockId = this.props.model.getTile( innerX + i, innerY + j ).blockId;
                 var key = j * innerRows + i;
 
                 tiles.push(
@@ -66,8 +66,8 @@ var ScrollableView = React.createClass({
         var innerX = Math.floor( this.props.cameraX / tileWidth ) - Math.floor( innerCols / 2 ),
             innerY = Math.floor( this.props.cameraY / tileHeight ) - Math.floor( innerRows / 2 );
 
-        var boardWidth = this.props.model.tiles.width,
-            boardHeight = this.props.model.tiles.height;
+        var boardWidth = this.props.model.tileCols,
+            boardHeight = this.props.model.tileRows;
 
         var worldStyle = { left: - ( this.props.cameraX - 200 ),
                            top: - ( this.props.cameraY - 200 ),
@@ -109,17 +109,7 @@ function makeScrollableView( container, model, player ) {
 
     }
 
-    function handleKeyEvent( ev ) {
-
-        var dx = ( ev.keyCode == 39 ) - ( ev.keyCode == 37 );
-        var dy = ( ev.keyCode == 40 ) - ( ev.keyCode == 38 );
-  
-        if ( dx || dy ) {
-            player.move(dx, dy);
-            view.refresh();
-            return true;
-        }
-    }
+    
 
     $(function() {
 
@@ -159,8 +149,7 @@ function makeScrollableView( container, model, player ) {
             updateCallbacks.push( callback );
 
         },
-        refresh: refresh,
-        handleKeyEvent: handleKeyEvent
+        refresh: refresh
     };
 
 

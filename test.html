@@ -33,7 +33,7 @@ var tiles = build(tileBuilder, function() { /*
 111111333333
 */});
 
-var model = {
+var model = new LevelModel({
     tiles : tiles,
 
     entities: [ 
@@ -41,7 +41,7 @@ var model = {
       new Entity(4, 7, "enemy"), 
       new Entity(8, 4, "enemy") ]
 
-}
+});
 
 
 var view = new WorldView({ model: model,

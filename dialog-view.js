@@ -50,7 +50,9 @@ var DialogView = React.createClass({
         }
 
         if ( ev.keyCode == 13 ) {
+            var option = this.props.dialog.options[ this.state.scrollIndex ];
             this.close();
+            if (option.callback) option.callback();
             return true;
         }
 

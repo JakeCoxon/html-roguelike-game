@@ -8,12 +8,7 @@ function build(builder, f) {
         });
     });
 
-    return {
-        data: data,
-
-        width: _.max(_.map(data, function(line) { return line.length; })),
-        height: data.length
-    }
+    return data;
 }
 
 
@@ -25,16 +20,9 @@ function set(obj, key, el) {
     obj[key] = el; return el;
 }
 
-function getTile(x, y) {
-    return !model.tiles.data[y] ? tileBuilder[0]() :
-           !model.tiles.data[y][x] ? tileBuilder[0]() : model.tiles.data[y][x];
-}
+
  
-function getBlockedByEntity(x, y) {
-    return _.find(model.entities, function(entity) {
-        return entity.x == x && entity.y == y;
-    });
-}
+
 
 
 
@@ -55,21 +43,11 @@ function Entity(x, y, className) {
     
     this.onMoveCallback = function() {};
     
-    this.move = function(x, y) {
-        var newX = this.x + x,
-            newY = this.y + y;
-        var tile = getTile(newX, newY),
-            entity = getBlockedByEntity(newX, newY);
-        
-        if (tile.solid) {
-            if (this == player) onPlayerBumpTile(tile);
-        } else if (entity) {
-            if (this == player) onPlayerBumpEntity(entity);
-        } else {
-            this.x = newX; this.y = newY;
-            this.onMoveCallback();
-            if (this == player) onPlayerPerformAction();
-        }
+    this.move = function( dx, dy ) {
+
+        this.x += dx; this.y += dy;
+        this.onMoveCallback();
+
     };
 }
 
@@ -155,36 +133,80 @@ var tileBuilder = {};
     
 })();
 
-function onPlayerBumpTile(tile) {
-    if (tile.onBump) {
-        var result = tile.onBump( player );
-        if (result && result.turns) onPlayerPerformAction();
+function PlayerController( player, levelModel ) {
+
+    this.move = function( dx, dy ) {
+        
+        var newX = player.x + dx,
+            newY = player.y + dy;
+
+        var tile = levelModel.getTile( newX, newY ),
+            entity = levelModel.getBlockedByEntity( newX, newY );
+        
+        if ( tile.solid ) {
+            this.onPlayerBumpTile( tile );
+        } else if ( entity ) {
+            this.onPlayerBumpEntity( entity );
+        } else {
+            this.onPlayerPerformAction( );
+            player.move( dx, dy );
+        }
     }
-}
-function onPlayerBumpEntity(entity) {
-    if (entity.onBump) {
-        var result = entity.onBump( player );
-        if (result && result.turns) onPlayerPerformAction();
+
+    this.onPlayerBumpTile = function( tile ) {
+        if ( tile.onBump ) {
+            var result = tile.onBump( player );
+            if (result && result.turns) this.onPlayerPerformAction();
+        }
     }
-}
-function onPlayerPerformAction() {
-    enemyController.updateAll();
+    this.onPlayerBumpEntity = function( entity ) {
+        if ( entity.onBump ) {
+            var result = entity.onBump( player );
+            if (result && result.turns) this.onPlayerPerformAction();
+        }
+    }
+    this.onPlayerPerformAction = function( ) {
+        
+    }
+
 }
 
-var enemyController = {
+
+
+var enemyModel = {
     enemies: [],
     pushAll: function(enemies) {
         Array.prototype.push.apply(this.enemies, enemies);
     },
-    updateAll: function() {
-        _.each(this.enemies, function(enemy) {
-            enemy.move(
-                Math.floor(Math.random() * 3 - 1),
-                Math.floor(Math.random() * 3 - 1));
-        });
+    
+}
+
+function EnemyController( enemyModel, levelModel ) {
+    this.updateAll = function( ) {
+        _.each( enemyModel.enemies, function( enemy ) {
+            this.moveEnemy( enemy );
+        }.bind( this ) );
+    }
+
+    this.moveEnemy = function( enemy ) {
+            
+        var dx = Math.floor( Math.random() * 3 - 1 ),
+            dy = Math.floor( Math.random() * 3 - 1 );
+
+        var newX = enemy.x + dx,
+            newY = enemy.y + dy;
+
+        var tile = levelModel.getTile( newX, newY ),
+            entity = levelModel.getBlockedByEntity( newX, newY );
+        
+        if ( !tile.solid && !entity ) {
+            enemy.move( dx, dy );
+        }
+        
     }
 }
 
-var dialogController = {
+var dialogModel = {
     events: new EventEmitter2()
 }
+

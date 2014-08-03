@@ -18,39 +18,38 @@ var tiles = build(tileBuilder, function() { /*
 */});
 
 var enemies = [ 
-  new Entity(1, 4, "enemy"), 
-  new Entity(4, 4, "enemy"), 
-  new Entity(5, 4, "enemy") ];
+    new Entity(1, 4, "enemy"), 
+    new Entity(4, 4, "enemy"), 
+    new Entity(5, 4, "enemy") ];
 
 
 var wizard = new Entity(12, 2, "wizard");
 wizard.onBump = function() {
-  dialogController.events.emit("dialog", {
-    message: "Owl: Hello mate",
-    options: [
-      { message: "Hello" },
-      { message: "Go away!" },
-      { message: "Give me your gold bitch" }
-    ]
-  });
+    dialogModel.events.emit("dialog", {
+        message: "Owl: Hello mate",
+        options: [
+            { message: "Hello" },
+            { message: "Go away!" },
+            { message: "Give me your gold bitch", callback: function() { player.money += 10; } }
+        ]
+    });
 }
 
 var player = new Entity(1, 1, "player");
 
 player.inventory = [
-  { name: "Sword of a thousands truths" },
-  { name: "Potion" },
-  { name: "Potion" } ];
+    { name: "Sword of a thousands truths" },
+    { name: "Potion" },
+    { name: "Potion" } ];
 
 player.money = 10;
 
-var model = {
+var levelModel = new LevelModel({
     tiles : tiles,
 
-    entities: [ player, wizard ].concat( enemies ),
-    player: player,
+    entities: [ player, wizard, enemies ],
+    player: player
 
+});
 
-}
-
-enemyController.pushAll(enemies);
+enemyModel.pushAll(enemies);
