@@ -8,7 +8,7 @@ var DialogView = React.createClass({
 
     render: function( ) {
 
-        if ( !this.props.dialog ) return React.DOM.div( {}, "" );
+        if ( !this.props.dialog ) return React.DOM.div( { style: { display: 'none' } }, "" );
 
         var message = this.props.dialog.message;
 

@@ -148,8 +148,8 @@ function PlayerController( player, levelModel ) {
         } else if ( entity ) {
             this.onPlayerBumpEntity( entity );
         } else {
-            this.onPlayerPerformAction( );
             player.move( dx, dy );
+            this.onPlayerPerformAction( );
         }
     }
 

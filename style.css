@@ -1,3 +1,8 @@
+body {
+    height: 388px;
+    position: relative;
+
+}
 #inventory-container {
     font: 13px Helvetica;
     padding: 0 0 0 2px;
@@ -24,6 +29,22 @@
     top: 0;
 }
 
+#dialog-container div {
+    width: 352px;
+    font-family: Helvetica;
+    font-size: 12px;
+    position: absolute;
+    bottom: 10px;
+    left: 16px;
+    background-color: rgba(255,255,255,0.9);
+    padding: 4px;
+    box-sizing: border-box;
+}
+#dialog-container li {
+    list-style: none;
+    padding: 2px;
+}
+
 .player {
     position: absolute;
     transition: all 0.1s ease;
@@ -31,7 +52,7 @@
     background-color: red;
     width: 32px;
     height: 32px;
-    background-image: url(http://i.imgur.com/MZg0XUl.png);
+    background-image: url(icons.png);
     background-position: -128px 0;
     background-size: 480px;
 }
@@ -42,7 +63,7 @@
     background-color: #000099;
     width: 32px;
     height: 32px;
-    background-image: url(http://i.imgur.com/MZg0XUl.png);
+    background-image: url(icons.png);
     background-position: -192px -224px;
     background-size: 480px;
 }
@@ -52,7 +73,7 @@
     left: 0; top: 0;
     width: 32px;
     height: 32px;
-    background-image: url(http://i.imgur.com/MZg0XUl.png);
+    background-image: url(icons.png);
     background-position: -160px -224px;
     background-size: 480px;
 }
@@ -60,7 +81,7 @@
     width: 32px; height: 32px;
     background-color: #333;
     display: inline-block;
-    background-image: url(http://i.imgur.com/MZg0XUl.png);
+    background-image: url(icons.png);
     background-size: 480px;
 }
 .tile.block0 {
